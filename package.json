@@ -1,0 +1,32 @@
+{
+  "name": "conoha-dns",
+  "version": "0.0.1",
+  "description": "Command-line client for ConoHa DNS API",
+  "bin": {
+    "conoha-dns": "./cli.js"
+  },
+  "scripts": {
+    "build": "nexe -i cli.js -o conoha-dns.exe"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaz/conoha-dns.git"
+  },
+  "author": {
+    "name": "Kazuki Sawada",
+    "url": "http://narusejun.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kaz/conoha-dns/issues"
+  },
+  "homepage": "https://github.com/kaz/conoha-dns#readme",
+  "dependencies": {
+    "co": "^4.6.0",
+    "command-line-args": "^3.0.4",
+    "command-line-commands": "^1.0.4",
+    "command-line-usage": "^3.0.8",
+    "console.table": "^0.7.0",
+    "promptly": "^2.1.0"
+  }
+}
