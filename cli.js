@@ -76,6 +76,10 @@ const fixdata = _ => {
 };
 
 co(function*(){
+	if(!command || command == "help"){
+		return console.log(usage);
+	}
+	
 	if(command == "auth"){
 		yield auth.authorize(opts);
 		return console.log("OK");
@@ -99,12 +103,10 @@ co(function*(){
 		opts.name = opts.name.replace(/[^.]$/, "$&.");
 	}
 	if(opts.domain && /\./.test(opts.domain)){
-		opts.domain = opts.domain.replace(/[^.]$/, "$&.");
-		opts.domain = yield client.findDomainID(opts.domain);
+		opts.domain = yield client.findDomainID(opts.domain.replace(/[^.]$/, "$&."));
 	}
 	if(opts.domain && opts.record && /\./.test(opts.record)){
-		opts.record = opts.record.replace(/[^.]$/, "$&.");
-		opts.record = yield client.findRecordID(opts.domain, opts.record);
+		opts.record = yield client.findRecordID(opts.domain, opts.record.replace(/[^.]$/, "$&."));
 	}
 	
 	if(opts.domain && opts.record){
@@ -136,8 +138,6 @@ co(function*(){
 		}else if(command == "add"){
 			necessary(["name"]);
 			show(yield client.addDomain(opts));
-		}else{
-			console.log(usage);
 		}
 	}
 }).catch(e => console.error(e));

@@ -1,6 +1,6 @@
 {
   "name": "conoha-dns",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Command-line client for ConoHa DNS API",
   "bin": {
     "conoha-dns": "./cli.js"
@@ -29,7 +29,6 @@
     "console.table": "^0.7.0",
     "glob": "^7.1.1",
     "promptly": "^2.1.0",
-    "public-ip": "^2.0.1",
-    "whatismyip": "^1.1.1"
+    "public-ip": "^2.0.1"
   }
 }
