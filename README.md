@@ -1,5 +1,7 @@
 # conoha-dns
 
+[![NPM](https://nodei.co/npm/conoha-dns.png)](https://nodei.co/npm/conoha-dns/)
+
 ConoHaのDNS APIをCLIで操作するヤツです。
 このツールを使って問題が起きても一切責任は負いませんので自己責任でお願いします！
 
@@ -11,9 +13,28 @@ ConoHaのDNS APIをCLIで操作するヤツです。
 $ npm install --global conoha-dns
 ```
 
+Nodeはv7.x.xで動作確認しています。
+（たぶんv6.x.xでも動きます。）
+
 ### 入っていない場合
 
+#### Windows
 
+[ここ](https://github.com/kaz/conoha-dns/releases/tag/0.0.2)から`conoha-dns-win.zip`をダウンロードして適当な場所に解凍してください。
+
+#### macOS
+
+以下のコマンドを実行してください。
+```sh
+$ P=/usr/local/bin/conoha-dns && curl -L https://github.com/kaz/conoha-dns/releases/download/0.0.2/conoha-dns-mac.xz | xzcat > $P && chmod +x $P
+```
+
+#### Linux
+
+以下のコマンドを実行してください。
+```sh
+# P=/usr/local/bin/conoha-dns && curl -L https://github.com/kaz/conoha-dns/releases/download/0.0.2/conoha-dns-linux.xz | xzcat > $P && chmod +x $P
+```
 
 ## 使い方
 
