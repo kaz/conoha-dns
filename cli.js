@@ -55,8 +55,10 @@ const show = data => {
 	}
 	if("verbose" in opts){
 		console.log(data);
-	}else{
+	}else if(data.length){
 		console.table(data.map(filter["domain_id" in data[0] ? "recRes" : "domRes"]));
+	}else{
+		console.log("No data");
 	}
 };
 const necessary = keys => {
