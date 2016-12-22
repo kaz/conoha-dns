@@ -9,7 +9,7 @@ const auth = require("./lib/auth");
 const usage = require("./lib/usage");
 const filter = require("./lib/filter");
 
-const {command, argv} = clc([null, "help", "auth", "list", "add", "remove", "update"]);
+const {command, argv} = clc([null, "help", "auth", "list", "add", "remove", "update", "nginx"]);
 
 const opts = cla([
 	// auth
@@ -29,19 +29,24 @@ const opts = cla([
 	// record
 	{name: "type", alias: "t", type: String},
 	{name: "data", alias: "d", type: String},
-	{name: "priority", alias: "p", defaultValue: 10, type: Number},
+	{name: "priority", alias: "p", type: Number},
 	{name: "gslb_region", type: String},
 	{name: "gslb_weight", type: Number},
 	{name: "gslb_check", type: Number},
 	
-	// switch
+	// batch
+	{name: "file", alias: "f", type: String},
+	{name: "directory", alias: "D", type: String},
+	{name: "A", type: String},
+	{name: "AAAA", type: String},
+	
+	// misc
 	{name: "domain", type: String},
 	{name: "record", type: String},
 	{name: "verbose", alias: "v", type: Boolean},
 ], argv);
 
 const show = data => {
-	data = JSON.parse(data);
 	const keys = Object.keys(data);
 	if(keys.length == 1){
 		data = data[keys[0]];
@@ -61,36 +66,51 @@ const necessary = keys => {
 		}
 	}
 };
+const fixdata = _ => {
+	if(opts.type == "MX" || opts.type == "CNAME"){
+		opts.data = opts.data.replace(/[^.]$/, "$&.");
+	}
+	if(opts.type == "MX" && !opts.priority){
+		opts.priority = 10;
+	}
+};
 
 co(function*(){
-	if(command === "auth"){
+	if(command == "auth"){
 		yield auth.authorize(opts);
 		return console.log("OK");
 	}
 	
+	if(command == "nginx"){
+		necessary(["file"]);
+		const client = yield auth.getBatchClient(opts);
+		return yield client.nginx(opts);
+	}
+	
 	const client = yield auth.getClient(opts);
 	
-	if("name" in opts){
-		if(!("domain" in opts)){
+	if(opts.name){
+		if(!opts.domain){
 			opts.domain = yield client.exportDomain(opts.name);
 		}
-		if(!("record" in opts)){
+		if(!opts.record){
 			opts.record = opts.domain == opts.name ? null : opts.name;
 		}
-		opts.name += ".";
+		opts.name = opts.name.replace(/[^.]$/, "$&.");
 	}
 	if(opts.domain && /\./.test(opts.domain)){
-		opts.domain += ".";
+		opts.domain = opts.domain.replace(/[^.]$/, "$&.");
 		opts.domain = yield client.findDomainID(opts.domain);
 	}
 	if(opts.domain && opts.record && /\./.test(opts.record)){
-		opts.record += ".";
+		opts.record = opts.record.replace(/[^.]$/, "$&.");
 		opts.record = yield client.findRecordID(opts.domain, opts.record);
 	}
 	
 	if(opts.domain && opts.record){
 		if(command == "update"){
 			necessary(["type", "data"]);
+			fixdata();
 			show(yield client.updateRecord(opts));
 		}else if(command == "remove"){
 			yield client.removeRecord(opts);
@@ -101,6 +121,7 @@ co(function*(){
 			show(yield client.listRecord(opts));
 		}else if(command == "add"){
 			necessary(["type", "data"]);
+			fixdata();
 			show(yield client.addRecord(opts));
 		}else if(command == "update"){
 			necessary(["name"]);
